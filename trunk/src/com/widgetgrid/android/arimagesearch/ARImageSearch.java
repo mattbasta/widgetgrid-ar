@@ -1,7 +1,6 @@
 package com.widgetgrid.android.arimagesearch;
 
 import com.widgetgrid.android.arimagesearch.zxing.BinaryBitmap;
-import com.widgetgrid.android.arimagesearch.zxing.BitMatrix;
 import com.widgetgrid.android.arimagesearch.zxing.HybridBinarizer;
 import com.widgetgrid.android.arimagesearch.zxing.PlanarYUVLuminanceSource;
 import com.widgetgrid.android.arimagesearch.zxing.PointInfoObject;
@@ -9,11 +8,11 @@ import com.widgetgrid.android.arimagesearch.zxing.PointProcessor;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.pm.ActivityInfo;
+import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.Camera;
-import android.hardware.Camera.PictureCallback;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -22,19 +21,30 @@ import android.view.ViewGroup.LayoutParams;
 public class ARImageSearch extends Activity {
 	private CameraPreviewSurface mPreview;
 	private OverlayView mOverlay;
+	private GLSurfaceView mGLSurface;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		// Create our Preview view and set it as the content of our activity.
 		mPreview = new CameraPreviewSurface(this);
-		setContentView(mPreview);
-		
+
 		// Demon magic to do an overlay
 		mOverlay = new OverlayView(this);
+		
+		// Demon demon magic to do an overlay
+		mGLSurface = new GLSurfaceView(this);
+		
+		mGLSurface.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+		mGLSurface.setRenderer(new com.widgetgrid.android.arimagesearch.threedee.CubeRenderer(true));
+		mGLSurface.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		
+		setContentView(mGLSurface);
+		addContentView(mPreview, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		addContentView(mOverlay, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
 	}
