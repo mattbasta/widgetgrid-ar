@@ -1,0 +1,1 @@
+An augmented reality implementation that takes advantage of the Widget Grid platform. This project blends technologies used in QR Codes, ARToolkit implementations, web mashups, and other rich medias to create a fluid user experience.
